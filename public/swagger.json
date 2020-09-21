@@ -1,0 +1,201 @@
+{
+    "paths":{
+        "/order": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [{
+                    "in": "body",
+                    "name": "body",
+                    "required": true,
+                    "schema": {
+                        "$ref": "#/definitions/Order"
+                    }
+                }],
+                "responses": {
+                    "200": {
+                        "description": "Order Created Successfully"
+                    }, 
+                    "400": {
+                        "description": "Some values are not valid"
+                    },
+                    "500": {
+                        "description": "Server error"
+                    }
+                },
+                "summary": "Create a new order"
+            }
+        },
+        "/order/query": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [{
+                    "in": "body",
+                    "name": "body",
+                    "required": true,
+                    "schema": {
+                        "$ref": "#/definitions/QueryFilter"
+                    }
+                }],
+                "responses": {
+                    "200": {
+                        "description": "Successful query"
+                    }, 
+                    "400": {
+                        "description": "Invalid filter"
+                    },
+                    "500": {
+                        "description": "Server error"
+                    }
+                },
+                "summary": "Queries order based on provided filter."
+            }
+            
+        },
+        "/payment/pay": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [{
+                    "in": "body",
+                    "name": "body",
+                    "required": true,
+                    "schema": {
+                        "$ref": "#/definitions/PaymentObject"
+                    }
+                }],
+                "responses": {
+                    "200": {
+                        "description": "Successful payment"
+                    }, 
+                    "400": {
+                        "description": "Invalid payment ID or missing Gateway Reference"
+                    },
+                    "402": {
+                        "description": "Payment gateway failure"
+                    },
+                    "500": {
+                        "description": "Server error"
+                    }
+                },
+                "summary": "Pay for the order."
+            }
+        },
+        "/payment/status": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [{
+                    "in": "body",
+                    "name": "body",
+                    "required": true,
+                    "schema": {
+                        "$ref": "#/definitions/PaymentID"
+                    }
+                }],
+                "responses": {
+                    "200": {
+                        "description": "Status check successful"
+                    }, 
+                    "400": {
+                        "description": "Invalid payment ID"
+                    },
+                    "404": {
+                        "description": "Payment ID not found"
+                    },
+                    "500": {
+                        "description": "Server error"
+                    }
+                },
+                "summary": "Query payment status."
+            }
+        }
+    },
+    "definitions": {
+        "Order": {
+            "properties": {
+                "hotelID": {
+                    "type": "string", "example": "abcd1234"
+                },
+                "hotelName": {
+                    "type": "string", "example": "The Danaa"
+                },
+                "bookingDetails": {
+                    "type": "object", "example": {
+                        "checkIn": 1600620945658,
+                        "checkOut": 1600620960687,
+                        "roomID":"abc123",
+                        "roomName": "Deluxe Suite",
+                        "guestCount": 4
+                    }
+                },
+                "customer": {
+                    "type": "object", "example": {
+                        "name": "Abu Bakar Karim",
+                        "phone": "+60123456789",
+                        "email": "bakar.karim@gmail.com"
+                    }
+                },
+                "amount": {
+                    "type": "real", "example": 249.00
+                }
+            },
+            "type": "object"
+        },
+        "PaymentID": {
+            "properties": {
+                "paymentID": {
+                    "type":"string", "example": "1600622285729_64cUk5d6o9"
+                }
+            }
+        }, 
+        "PaymentObject": {
+            "properties": {
+                "paymentID": {
+                    "type":"string", "example": "1600622285729_64cUk5d6o9"
+                }, 
+                "paymentGatewayReference": {
+                    "type": "string", 
+                    "example": "evboi245nmwdvsf323djksd", 
+                    "description": "pointer created by the payment gateway from credit card details, for 2FA"
+                }
+            }
+        }, 
+        "QueryFilter": {
+            "properties": {
+                "filter": {
+                    "type": "object", "example": {
+                        "custName": "John Smith"
+                    },
+                    "enum": [
+                        "hotelName",
+                        "custName",
+                        "custEmail",
+                        "custPhone"
+                    ],
+                    "description": "Filter key from enum. One at a time. If more than one, the first one will be chosen"
+                }
+            }
+        }
+    },
+    "basePath": "/",
+    "schemes": ["http", "https"],
+    "swagger": "2.0"
+}
